@@ -1,107 +1,109 @@
-AI-First CRM (HCP Module)
-This is a web-based CRM (Customer Relationship Management) project designed specifically for Medical Representatives (MRs) in the pharmaceutical sector. With this application, representatives can easily maintain a detailed record of their meetings, calls, and other interactions with Healthcare Professionals (HCPs).
+# AI-First CRM (HCP Module)
 
-The standout feature of this project is its powerful AI-driven chat interface alongside traditional form-based data entry, allowing users to log entries seamlessly by communicating in natural language.
+[![React](https://img.shields.io/badge/Frontend-React-61DAFB?style=flat-square&logo=react)](https://reactjs.org/)
+[![FastAPI](https://img.shields.io/badge/Backend-FastAPI-009688?style=flat-square&logo=fastapi)](https://fastapi.tiangolo.com/)
+[![Redux](https://img.shields.io/badge/State_Management-Redux-764ABC?style=flat-square&logo=redux)](https://redux-toolkit.js.org/)
+[![Groq](https://img.shields.io/badge/LLM_Inference-Groq-orange?style=flat-square)](https://groq.com/)
 
-🚀 Features
-Log via Structured Form: Log interactions conventionally by filling in the HCP's name, interaction type, and summary.
+A modern, web-based Customer Relationship Management (CRM) application tailored specifically for **Medical Representatives (MRs)** in the pharmaceutical sector. This application enables representatives to maintain detailed records of meetings, phone calls, and interactions with **Healthcare Professionals (HCPs)**.
 
-AI Chat Interface: Log entries through an AI agent using natural language commands (e.g., "Log a call with Dr. Rohan").
+The core strength of this system is its dual-input design: it combines a highly structured data-entry form with an **AI-driven chat interface**, allowing users to log records using natural language.
 
-View and Edit Logs: View, edit, or delete all entries easily within a professional data table.
+---
 
-Schedule Follow-ups: Instantly set the specific date and time for the next meeting or call for each interaction.
+## 🚀 Key Features
 
-View HCP History: Access the complete timeline of past interactions with any specific doctor by simply clicking on their name.
+*   **Log via Structured Form:** Register interactions by manually completing fields for HCP name, interaction type, and summary.
+*   **AI Chat Interface:** Talk naturally to a conversational AI agent (powered by Llama 3.1) to log entries instantly (e.g., *"Log a call with Dr. Rohan"*).
+*   **Interactive Log Table:** View, edit, or delete logged interactions inside a clean, modern data table.
+*   **Inline Follow-up Scheduling:** Choose dates and times directly from the table to schedule future interactions with HCPs.
+*   **HCP Timeline History:** Click an HCP's name to display a timeline modal summarizing all historical interactions with that particular doctor.
+*   **Quick Product Search:** Retrieve critical drug information (e.g., usages, active ingredients, side effects) via a fast search utility.
+*   **Refined UX:** Features modern UI components, smooth transitions, skeleton loaders, and responsive alignment.
 
-Search Product Information: Instantly fetch standard drug information (such as usage, indications, and side effects) using a quick search bar.
+---
 
-Modern UI: Provides a smooth user experience complete with skeleton loaders and clean modal transitions.
+## 🛠️ Tech Stack
 
-🛠️ Tech Stack
-Frontend:
+| Component | Technology | Description |
+| :--- | :--- | :--- |
+| **Frontend** | **React.js** | Interactive user interface |
+| | **Redux Toolkit** | Centralized global state management |
+| | **Axios** | Efficient API requests[cite: 1] |
+| | **CSS3** | Responsive, modern grid & layout design[cite: 1] |
+| **Backend** | **Python & FastAPI** | Ultra-fast, asynchronous API endpoints[cite: 1] |
+| | **SQLAlchemy** | Object-Relational Mapping (ORM)[cite: 1] |
+| **AI / LLM** | **LangChain & LangGraph** | AI agent workflow orchestration[cite: 1] |
+| | **Groq Cloud** | High-speed Llama 3.1 model inference[cite: 1] |
+| **Database** | **SQLite** | Lightweight, file-based relational storage[cite: 1] |
 
-React.js
+---
 
-Redux Toolkit (for global state management)
+## 📂 Project Structure
 
-Axios (for REST API communication)
-
-CSS3 (for responsive styling)
-
-Backend:
-
-Python
-
-FastAPI (high-performance asynchronous API framework)
-
-SQLAlchemy (ORM for relational database mapping)
-
-AI/LLM Layer:
-
-LangChain & LangGraph (for orchestrating the AI agent logic)
-
-Groq Cloud (for ultra-fast LLM inference using Llama 3.1)
-
-Database:
-
-SQLite
-
-📂 Project Structure
+```text
 ai_crm_project/
-├── backend/         # All Python and FastAPI source code
-│   ├── agent.py     # LangGraph AI Agent core logic
-│   ├── main.py      # FastAPI routing and endpoints
-│   ├── database.py  # SQLAlchemy database setup and models
+├── backend/         # Python FastAPI backend service
+│   ├── agent.py     # AI agent core logic (LangGraph)
+│   ├── main.py      # FastAPI routing & API endpoints
+│   ├── database.py  # SQLAlchemy models & DB connection
 │   └── crm.db       # Local SQLite database file
 │
-└── frontend/        # All React.js web assets
+└── frontend/        # React web application
     ├── src/
-    │   ├── App.js   # Main layout and components
-    │   ├── App.css  # Application style sheets
-    │   └── store/   # Redux slice configurations
+    │   ├── App.js   # Main application component & layouts
+    │   ├── App.css  # Global styles & layout customization
+    │   └── store/   # Redux Toolkit state & slices
     └── ...
 ⚙️ Setup and Installation
-Follow the steps below to set up and run the application locally:
+Follow these steps to run the frontend and backend servers locally:
 
 Prerequisites
-Node.js and npm installed (for the Frontend)
+Node.js & npm (for the frontend React app)[cite: 1]
 
-Python 3.8+ and pip installed (for the Backend)
+Python 3.8+ & pip (for the backend service)[cite: 1]
 
 1. Backend Setup
+Open your terminal, navigate to the backend folder, install dependencies, and run the FastAPI server[cite: 1]:
+
 Bash
-# 1. Navigate to the backend directory
+# Navigate to backend directory
 cd backend
 
-# 2. Install the required Python dependencies
+# Install the required Python dependencies
 pip install -r requirements.txt
 
-# 3. Configure the Groq API Key
-# Set your environment variable inside a .env file or dynamically in agent.py:
+# Configure your Groq API Key
+# Create a .env file inside the backend folder or set it in agent.py:
 # os.environ["GROQ_API_KEY"] = "your_actual_groq_api_key_here"
 
-# 4. Fire up the development backend server
+# Start the local development server
 python main.py
-The FastAPI backend server will start running locally at [http://127.0.0.1:8000](http://127.0.0.1:8000).
+🌐 The backend API service will run locally at http://127.0.0.1:8000[cite: 1].
 
 2. Frontend Setup
-Open a separate terminal window and execute the following commands:
+Open a separate terminal window, navigate to the frontend directory, and spin up the web app[cite: 1]:
 
 Bash
-# 1. Navigate to the frontend directory
+# Navigate to frontend directory
 cd frontend
 
-# 2. Install the necessary node packages
+# Install the necessary npm packages
 npm install
 
-# 3. Start the React development server
+# Start the React local development server
 npm start
-The frontend user interface will spin up at http://localhost:3000 and should open automatically in your web browser.
+🖥️ The frontend user interface will spin up at http://localhost:3000 and automatically load in your browser[cite: 1].
 
 💡 How to Use
-Logging via Form: Fill out the fields in the "Log via Structured Form" panel and hit the submit button to directly add data.
+Form-Based Logging: Navigate to the "Log via Structured Form" panel, enter your interaction details, and click Submit Form[cite: 1].
 
-Logging via AI Chat: Go to the "Chat with AI Agent" interface, type out your interaction in plain English (e.g., "Log a phone call with Dr. Rohan saying he liked CardioFlex"), and click Send to AI.
+AI-Agent Logging: Go to the "Chat with AI Agent" box, type out what happened in plain English (e.g., "Log a phone call with Dr. Rohan saying he liked CardioFlex"), and hit Send to AI[cite: 1].
 
-Managing Logs: Monitor all entries instantly inside the "Logged Interactions" table. You can use the inline context buttons to Schedule follow-ups, Edit past descriptions, or Delete an entry entirely.
+Managing Records: Check the "Logged Interactions" list[cite: 1]. Here, you can:
+
+Click Schedule to quickly save a follow-up appointment[cite: 1].
+
+Click Edit to modify details inline[cite: 1].
+
+Click the HCP Name directly to review that specific physician's past logs[cite: 1].

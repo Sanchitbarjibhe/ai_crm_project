@@ -29,13 +29,13 @@ The core strength of this system is its dual-input design: it combines a highly 
 | :--- | :--- | :--- |
 | **Frontend** | **React.js** | Interactive user interface |
 | | **Redux Toolkit** | Centralized global state management |
-| | **Axios** | Efficient API requests[cite: 1] |
-| | **CSS3** | Responsive, modern grid & layout design[cite: 1] |
-| **Backend** | **Python & FastAPI** | Ultra-fast, asynchronous API endpoints[cite: 1] |
-| | **SQLAlchemy** | Object-Relational Mapping (ORM)[cite: 1] |
-| **AI / LLM** | **LangChain & LangGraph** | AI agent workflow orchestration[cite: 1] |
-| | **Groq Cloud** | High-speed Llama 3.1 model inference[cite: 1] |
-| **Database** | **SQLite** | Lightweight, file-based relational storage[cite: 1] |
+| | **Axios** | Efficient API requests |
+| | **CSS3** | Responsive, modern grid & layout design |
+| **Backend** | **Python & FastAPI** | Ultra-fast, asynchronous API endpoints |
+| | **SQLAlchemy** | Object-Relational Mapping (ORM) |
+| **AI / LLM** | **LangChain & LangGraph** | AI agent workflow orchestration |
+| | **Groq Cloud** | High-speed Llama 3.1 model inference |
+| **Database** | **SQLite** | Lightweight, file-based relational storage |
 
 ---
 
@@ -60,12 +60,12 @@ ai_crm_project/
 Follow these steps to run the frontend and backend servers locally:
 
 Prerequisites
-Node.js & npm (for the frontend React app)[cite: 1]
+Node.js & npm (for the frontend React app)
 
-Python 3.8+ & pip (for the backend service)[cite: 1]
+Python 3.8+ & pip (for the backend service)
 
 1. Backend Setup
-Open your terminal, navigate to the backend folder, install dependencies, and run the FastAPI server[cite: 1]:
+Open your terminal, navigate to the backend folder, install dependencies, and run the FastAPI server:
 
 Bash
 # Navigate to backend directory
@@ -80,10 +80,10 @@ pip install -r requirements.txt
 
 # Start the local development server
 python main.py
-🌐 The backend API service will run locally at http://127.0.0.1:8000[cite: 1].
+🌐 The backend API service will run locally at http://127.0.0.1:8000.
 
 2. Frontend Setup
-Open a separate terminal window, navigate to the frontend directory, and spin up the web app[cite: 1]:
+Open a separate terminal window, navigate to the frontend directory, and spin up the web app:
 
 Bash
 # Navigate to frontend directory
@@ -94,17 +94,17 @@ npm install
 
 # Start the React local development server
 npm start
-🖥️ The frontend user interface will spin up at http://localhost:3000 and automatically load in your browser[cite: 1].
+🖥️ The frontend user interface will spin up at http://localhost:3000 and automatically load in your browser.
 
 💡 How to Use
-Form-Based Logging: Navigate to the "Log via Structured Form" panel, enter your interaction details, and click Submit Form[cite: 1].
+Form-Based Logging: Navigate to the "Log via Structured Form" panel, enter your interaction details, and click Submit Form.
 
-AI-Agent Logging: Go to the "Chat with AI Agent" box, type out what happened in plain English (e.g., "Log a phone call with Dr. Rohan saying he liked CardioFlex"), and hit Send to AI[cite: 1].
+AI-Agent Logging: Go to the "Chat with AI Agent" box, type out what happened in plain English (e.g., "Log a phone call with Dr. Rohan saying he liked CardioFlex"), and hit Send to AI.
 
-Managing Records: Check the "Logged Interactions" list[cite: 1]. Here, you can:
+Managing Records: Check the "Logged Interactions" list. Here, you can:
 
-Click Schedule to quickly save a follow-up appointment[cite: 1].
+Click Schedule to quickly save a follow-up appointment.
 
-Click Edit to modify details inline[cite: 1].
+Click Edit to modify details inline.
 
-Click the HCP Name directly to review that specific physician's past logs[cite: 1].
+Click the HCP Name directly to review that specific physician's past logs.

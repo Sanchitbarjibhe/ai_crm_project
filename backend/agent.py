@@ -1,5 +1,6 @@
 import os
 from typing import Annotated, TypedDict
+from dotenv import load_dotenv
 from langchain_groq import ChatGroq
 from langchain_core.tools import tool
 from langgraph.graph import StateGraph, START, END
@@ -8,11 +9,14 @@ from database import SessionLocal, Interaction
 from langchain_core.messages import SystemMessage
 from langgraph.prebuilt import ToolNode, tools_condition
 
-
-os.environ["GROQ_API_KEY"] = "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"
+# Load environment variables from .env file
+load_dotenv()
 
 # 1. LLM Setup
-llm = ChatGroq(model="llama-3.1-8b-instant", temperature=0.2)
+llm = ChatGroq(
+    model="llama-3.1-8b-instant", 
+    temperature=0.2
+)
 
 
 @tool

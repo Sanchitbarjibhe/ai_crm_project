@@ -1,101 +1,107 @@
-# AI-First CRM (HCP Module)
+AI-First CRM (HCP Module)
+This is a web-based CRM (Customer Relationship Management) project designed specifically for Medical Representatives (MRs) in the pharmaceutical sector. With this application, representatives can easily maintain a detailed record of their meetings, calls, and other interactions with Healthcare Professionals (HCPs).
 
-This is a web-based CRM (Customer Relationship Management) project designed specifically for representatives in the pharmaceutical sector (Medical Representatives). With this application, representatives can easily keep a record of their meetings, calls, and other interactions with Healthcare Professionals (HCPs).
+The standout feature of this project is its powerful AI-driven chat interface alongside traditional form-based data entry, allowing users to log entries seamlessly by communicating in natural language.
 
-The unique feature of this project is that along with traditional form-based data entry, it also includes a powerful AI-driven chat interface, allowing users to log entries by communicating in natural language.
+🚀 Features
+Log via Structured Form: Log interactions conventionally by filling in the HCP's name, interaction type, and summary.
 
-## 🚀 Features
+AI Chat Interface: Log entries through an AI agent using natural language commands (e.g., "Log a call with Dr. Rohan").
 
-- **Log via Structured Form:** Log entries traditionally by filling in the HCP's name, interaction type, and summary.
-- **AI Chat Interface:** Log entries through an AI agent by giving commands in natural language (e.g., "Log a call with Dr. Rohan").
-- **View and Edit Logs:** View, edit, or delete all entries in a professional table.
-- **Schedule Follow-ups:** Set the date and time for the next meeting or call for each entry.
-- **View HCP History:** See the entire history of past interactions with any HCP in a pop-up by clicking on their name.
-- **Search Product Information:** Quickly find information about medicines (e.g., usage, side effects).
-- **Modern UI:** Excellent user experience with skeleton loading and an attractive modal view.
+View and Edit Logs: View, edit, or delete all entries easily within a professional data table.
 
-## 🛠️ Tech Stack
+Schedule Follow-ups: Instantly set the specific date and time for the next meeting or call for each interaction.
 
-- **Frontend:**
-  - React.js
-  - Redux Toolkit (for State Management)
-  - Axios (for API Calls)
-  - CSS3 (for Styling)
+View HCP History: Access the complete timeline of past interactions with any specific doctor by simply clicking on their name.
 
-- **Backend:**
-  - Python
-  - FastAPI (API Framework)
-  - SQLAlchemy (for Database Communication)
+Search Product Information: Instantly fetch standard drug information (such as usage, indications, and side effects) using a quick search bar.
 
-- **AI/LLM:**
-  - LangChain & LangGraph (for creating the AI agent)
-  - Groq (for LLM Service - Llama 3.1)
+Modern UI: Provides a smooth user experience complete with skeleton loaders and clean modal transitions.
 
-- **Database:**
-  - SQLite
+🛠️ Tech Stack
+Frontend:
 
-## 📂 Project Structure
+React.js
 
-```
+Redux Toolkit (for global state management)
+
+Axios (for REST API communication)
+
+CSS3 (for responsive styling)
+
+Backend:
+
+Python
+
+FastAPI (high-performance asynchronous API framework)
+
+SQLAlchemy (ORM for relational database mapping)
+
+AI/LLM Layer:
+
+LangChain & LangGraph (for orchestrating the AI agent logic)
+
+Groq Cloud (for ultra-fast LLM inference using Llama 3.1)
+
+Database:
+
+SQLite
+
+📂 Project Structure
 ai_crm_project/
-├── backend/         # सर्व Python आणि FastAPI कोड
-│   ├── agent.py     # LangGraph AI एजंट
-│   ├── main.py      # FastAPI API एंडपॉइंट्स
-│   ├── database.py  # डेटाबेस सेटअप आणि मॉडेल
-│   └── crm.db       # SQLite डेटाबेस फाइल
+├── backend/         # All Python and FastAPI source code
+│   ├── agent.py     # LangGraph AI Agent core logic
+│   ├── main.py      # FastAPI routing and endpoints
+│   ├── database.py  # SQLAlchemy database setup and models
+│   └── crm.db       # Local SQLite database file
 │
-└── frontend/        # सर्व React.js कोड
+└── frontend/        # All React.js web assets
     ├── src/
-    │   ├── App.js   # मुख्य UI घटक
-    │   ├── App.css  # स्टायलिंग
-    │   └── store/   # Redux स्लाइस
+    │   ├── App.js   # Main layout and components
+    │   ├── App.css  # Application style sheets
+    │   └── store/   # Redux slice configurations
     └── ...
-```
+⚙️ Setup and Installation
+Follow the steps below to set up and run the application locally:
 
-## ⚙️ सेटअप आणि इन्स्टॉलेशन (Setup and Installation)
+Prerequisites
+Node.js and npm installed (for the Frontend)
 
-हा प्रकल्प चालवण्यासाठी खालील पायऱ्या फॉलो करा:
+Python 3.8+ and pip installed (for the Backend)
 
-### पूर्वतयारी (Prerequisites)
-- Node.js आणि npm (फ्रंटएंडसाठी)
-- Python 3.8+ आणि pip (बॅकएंडसाठी)
-
-### १. बॅकएंड सेटअप (Backend Setup)
-
-```bash
-# 1. backend फोल्डरमध्ये जा
+1. Backend Setup
+Bash
+# 1. Navigate to the backend directory
 cd backend
 
-# 2. आवश्यक लायब्ररी इन्स्टॉल करा
+# 2. Install the required Python dependencies
 pip install -r requirements.txt
 
-# 3. Groq API की सेट करा
-# agent.py फाइलमध्ये तुमची Groq API की टाका.
-# os.environ["GROQ_API_KEY"] = "तुमची_GROQ_API_की"
+# 3. Configure the Groq API Key
+# Set your environment variable inside a .env file or dynamically in agent.py:
+# os.environ["GROQ_API_KEY"] = "your_actual_groq_api_key_here"
 
-# 4. बॅकएंड सर्व्हर सुरू करा
+# 4. Fire up the development backend server
 python main.py
-```
-बॅकएंड सर्व्हर `http://127.0.0.1:8000` वर सुरू होईल.
+The FastAPI backend server will start running locally at [http://127.0.0.1:8000](http://127.0.0.1:8000).
 
-### २. फ्रंटएंड सेटअप (Frontend Setup)
+2. Frontend Setup
+Open a separate terminal window and execute the following commands:
 
-नवीन टर्मिनल उघडा आणि खालील कमांड्स चालवा:
-
-```bash
-# 1. frontend फोल्डरमध्ये जा
+Bash
+# 1. Navigate to the frontend directory
 cd frontend
 
-# 2. आवश्यक पॅकेजेस इन्स्टॉल करा
+# 2. Install the necessary node packages
 npm install
 
-# 3. React ॲप्लिकेशन सुरू करा
+# 3. Start the React development server
 npm start
-```
-फ्रंटएंड `http://localhost:3000` वर सुरू होईल आणि आपोआप तुमच्या ब्राउझरमध्ये उघडेल.
+The frontend user interface will spin up at http://localhost:3000 and should open automatically in your web browser.
 
-## वापर कसा करावा (How to Use)
+💡 How to Use
+Logging via Form: Fill out the fields in the "Log via Structured Form" panel and hit the submit button to directly add data.
 
-1.  **फॉर्मद्वारे नोंद:** "Log via Structured Form" या विभागातील फॉर्म भरा आणि "Submit Form" बटणावर क्लिक करा.
-2.  **AI चॅटद्वारे नोंद:** "Chat with AI Agent" या विभागातील चॅट बॉक्समध्ये नैसर्गिक भाषेत कमांड लिहा (उदा. "Log a phone call with Dr. Rohan saying he liked CardioFlex") आणि "Send to AI" बटणावर क्लिक करा.
-3.  **इतर क्रिया:** "Logged Interactions" टेबलमध्ये तुम्ही नोंदी पाहू शकता, तसेच प्रत्येक नोंदीसमोरील बटन्स वापरून **Schedule**, **Edit**, किंवा **Delete** करू शकता.
+Logging via AI Chat: Go to the "Chat with AI Agent" interface, type out your interaction in plain English (e.g., "Log a phone call with Dr. Rohan saying he liked CardioFlex"), and click Send to AI.
+
+Managing Logs: Monitor all entries instantly inside the "Logged Interactions" table. You can use the inline context buttons to Schedule follow-ups, Edit past descriptions, or Delete an entry entirely.

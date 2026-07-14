@@ -55,6 +55,7 @@ ai_crm_project/
     │   ├── App.css  # Global styles & layout customization
     │   └── store/   # Redux Toolkit state & slices
     └── ...
+```
 ⚙️ Setup and Installation
 Follow these steps to run the frontend and backend servers locally:
 

@@ -1,6 +1,7 @@
 import os
 from typing import Annotated, TypedDict
 from dotenv import load_dotenv
+from dotenv import load_dotenv
 from langchain_groq import ChatGroq
 from langchain_core.tools import tool
 from langgraph.graph import StateGraph, START, END
@@ -10,7 +11,20 @@ from langchain_core.messages import SystemMessage
 from langgraph.prebuilt import ToolNode, tools_condition
 
 # 1. LLM Setup
-llm = ChatGroq(model="llama-3.1-8b-instant", temperature=0.2)
+llm = ChatGroq(
+    model="llama-3.1-8b-instant", 
+    temperature=0.2
+)
+
+class InteractionSchema(BaseModel):
+    hcp_name: str = Field(description="Name of the Healthcare Professional/Doctor")
+    interaction_type: str = Field(description="Type of interaction, e.g., 'Call', 'In-Person Meeting', 'Email'")
+    summary: str = Field(description="Summary of what was discussed")
+    # 👇 हा नवीन कॉलम ॲड कर
+    next_follow_up: Optional[str] = Field(
+        default=None, 
+        description="The scheduled date and time for the next follow-up/meeting, if mentioned by the user (e.g., '2026-07-14 13:00:00'). Convert any natural date/time mentioned to ISO standard format if possible."
+    )
 
 
 @tool

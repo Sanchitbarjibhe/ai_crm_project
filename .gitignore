@@ -1,0 +1,36 @@
+# General
+.env
+*.log
+
+# IDE and OS specific files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# --- Frontend (React) ---
+
+# Dependencies
+frontend/node_modules
+
+# Build output
+frontend/build
+
+# Test results
+frontend/coverage
+
+# --- Backend (Python) ---
+
+# Python cache
+backend/__pycache__/
+
+# Virtual environment folders (e.g., venv, .venv, env)
+backend/venv
+backend/.venv
+backend/env
+
+# SQLite Database - It's good practice not to version control the database
+backend/crm.db
+
+# Environment variables file
+backend/.env

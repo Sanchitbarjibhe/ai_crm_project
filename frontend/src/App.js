@@ -9,19 +9,26 @@ const API_BASE = 'http://127.0.0.1:8000/api';
 function App() {
     const dispatch = useDispatch();
     const { chatHistory, recentLogs } = useSelector((state) => state.crm);
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const recognition = SpeechRecognition ? new SpeechRecognition() : null;
+
+
 
     // Form State
     const [formData, setFormData] = useState({ hcp_name: '', interaction_type: 'In-Person', summary: '' });
     // Chat Input State
-    const [chatInput, setChatInput] = useState('');
     const [editingId, setEditingId] = useState(null); // Which Log ID going to edit
     const [selectedHcpHistory, setSelectedHcpHistory] = useState(null);
     const [followUpDates, setFollowUpDates] = useState({});
     const [isLoading, setIsLoading] = useState(true); // New state for loading skeleton
     const [productQuery, setProductQuery] = useState('');
     const [productResult, setProductResult] = useState('');
+    //Mic SpeechRecognition state
+    const [isListening, setIsListening] = useState(false);
+    const [chatInput, setChatInput] = useState('');
+    const [isAiTyping, setIsAiTyping] = useState(false); // State for AI typing loader
 
-    //DB Opertion for stored log log interaction
+    // DB operation to fetch stored log interactions
     useEffect(() => {
         setIsLoading(true);
         axios.get(`${API_BASE}/interactions`)
@@ -33,6 +40,41 @@ function App() {
 
 
 
+    if (recognition) {
+        recognition.continuous = false; // Recording will stop when speech ends
+        recognition.lang = 'en-US';    // For English language (because our LLM understands English)
+        recognition.interimResults = false; // Will only show final results
+    }
+
+    const handleVoiceInput = () => {
+        if (!recognition) {
+            alert("Your browser does not support voice recording. Please use Google Chrome!");
+            return;
+        }
+
+        if (isListening) {
+            recognition.stop();
+            setIsListening(false);
+        } else {
+            setIsListening(true);
+            recognition.start();
+
+            recognition.onresult = (event) => {
+                const speechToText = event.results[0][0].transcript;
+                setChatInput(speechToText); // This text will go directly into the input box
+                setIsListening(false);
+            };
+
+            recognition.onerror = (event) => {
+                console.error("Speech recognition error:", event.error);
+                setIsListening(false);
+            };
+
+            recognition.onend = () => {
+                setIsListening(false);
+            };
+        }
+    };
 
     const handleFormSubmit = async (e) => {
         e.preventDefault();
@@ -112,17 +154,18 @@ function App() {
         }
     };
 
-
     // 2. Conversational Chat Sending To DB (LangGraph Agent) 
     const handleSendMessage = async () => {
         if (!chatInput.trim()) return;
 
         const userMsg = { sender: 'user', text: chatInput };
         dispatch(addMessage(userMsg));
+        const currentInput = chatInput;
         setChatInput('');
+        setIsAiTyping(true); // Start loader
 
         try {
-            const res = await axios.post(`${API_BASE}/chat`, { message: userMsg.text });
+            const res = await axios.post(`${API_BASE}/chat`, { message: currentInput });
             dispatch(addMessage({ sender: 'ai', text: res.data.response }));
 
             //REFRESH CHATBOX AFTER AI MESSAGE DONE IN CHATBOX
@@ -130,7 +173,10 @@ function App() {
             dispatch(setRecentLogs(refreshedLogs.data));
 
         } catch (err) {
-            console.error(err);
+            dispatch(addMessage({ sender: 'ai', text: "Sorry, there was an error connecting to the server." }));
+            console.error("Error sending message to AI:", err);
+        } finally {
+            setIsAiTyping(false); // Stop loader
         }
     };
 
@@ -196,11 +242,33 @@ function App() {
                                     <strong>{msg.sender === 'user' ? 'You' : 'CRM Agent'}:</strong> {msg.text}
                                 </div>
                             ))}
+                            {isAiTyping && (
+                                <div className="msg ai-msg typing-indicator">
+                                    <strong>CRM Agent:</strong> <span></span><span></span><span></span>
+                                </div>
+                            )}
                         </div>
                     </div>
-                    <div>
-                        <input type="text" value={chatInput} onChange={(e) => setChatInput(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()} placeholder="Type interaction or tool command..." />
-                        <button onClick={handleSendMessage}>Send to AI</button>
+                    <div className="chat-input-area">
+                        <input
+                            type="text"
+                            value={chatInput}
+                            onChange={(e) => setChatInput(e.target.value)}
+                            onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
+                            placeholder="Type interaction or tool command..."
+                            className="chat-input-field"
+                        />
+                        <button
+                            type="button"
+                            onClick={handleVoiceInput}
+                            className={`mic-btn ${isListening ? 'listening' : ''}`}
+                            title="Use Voice"
+                        >
+                            {isListening ? '🔴' : '🎙️'}
+                        </button>
+                        <button onClick={handleSendMessage} className="send-ai-btn">
+                            Send to AI
+                        </button>
                     </div>
                 </div>
             </div>
@@ -218,7 +286,7 @@ function App() {
                                     <th>Type</th>
                                     <th>Summary</th>
                                     <th>Next Follow-up</th>
-                                    <th style={{ width: '320px' }}>Actions</th>
+                                    <th style={{ width: '320px' }}>Scheduled</th>
                                 </tr>
                             </thead>
                             <tbody>

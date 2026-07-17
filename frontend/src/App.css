@@ -1,4 +1,6 @@
-/* --- Global Styles & Variables --- */
+/* =================================== */
+/* --- 1. Global Styles & Variables --- */
+/* =================================== */
 :root {
     --primary-color: #007bff;
     --primary-hover: #0056b3;
@@ -23,7 +25,9 @@ body {
     margin: 0;
 }
 
-/* --- Header --- */
+/* =================================== */
+/* --- 2. Header --- */
+/* =================================== */
 .app-header {
     background-color: var(--card-bg);
     padding: 1rem 2rem;
@@ -42,7 +46,9 @@ body {
     color: var(--primary-color);
 }
 
-/* --- Main Layout --- */
+/* =================================== */
+/* --- 3. Main Layout & Cards --- */
+/* =================================== */
 .main-content {
     padding: 2rem;
 }
@@ -82,7 +88,9 @@ h2 {
     margin-bottom: 20px;
 }
 
-/* --- Form Elements --- */
+/* =================================== */
+/* --- 4. Form Elements --- */
+/* =================================== */
 form {
     display: flex;
     flex-direction: column;
@@ -132,7 +140,9 @@ textarea:focus {
     background-color: var(--primary-hover);
 }
 
-/* --- Gemini-style Chatbox --- */
+/* =================================== */
+/* --- 5. Chat Interface --- */
+/* =================================== */
 .chat-box {
     height: 400px;
     overflow-y: auto;
@@ -204,17 +214,27 @@ textarea:focus {
     flex-grow: 1;
     border-radius: 25px;
     width: 100%;
-    padding: 12px 20px;
-    padding-right: 105px;
+    /* Make sure it takes full width before padding */
+    padding: 15px 120px 15px 20px;
+    /* Top, Right, Bottom, Left padding. Increased right padding */
     box-sizing: border-box;
+    resize: none;
+    /* Disable manual resizing by user */
+    overflow-y: hidden;
+    /* Hide scrollbar, resizing will handle overflow */
+    min-height: 50px;
+    /* Match button height */
+    max-height: 100px;
+    /* Prevent it from getting too large */
     border: 1px solid var(--border-color);
 }
 
 .send-ai-btn,
 .mic-btn {
     position: absolute;
-    top: 50%;
-    transform: translateY(-50%) scale(1);
+    bottom: 5px;
+    /* Position from the bottom of the container */
+    transform: scale(1);
     border: none;
     background-color: transparent;
     cursor: pointer;
@@ -236,7 +256,7 @@ textarea:focus {
 
 .send-ai-btn:active,
 .mic-btn:active {
-    transform: translateY(-50%) scale(0.95);
+    transform: scale(0.95);
 }
 
 .send-ai-btn {
@@ -267,14 +287,16 @@ textarea:focus {
     border-radius: 10px;
 }
 
-/* --- Logged Interactions Table --- */
+/* =================================== */
+/* --- 6. Interactions Table --- */
+/* =================================== */
 .table-container {
     overflow-x: auto;
     /* Enable horizontal scrolling on the container */
     border: 1px solid var(--border-color);
     border-radius: 12px;
     /* Smoother rounded corners */
-    /* box-shadow: var(--shadow); */
+    box-shadow: var(--shadow);
     background-color: var(--card-bg);
     margin-top: 20px;
 }
@@ -289,18 +311,12 @@ textarea:focus {
     /* Increased width to prevent wrapping */
 }
 
-
 .interactions-table th,
 .interactions-table td {
     padding: 15px 18px;
     /* Slightly adjusted padding */
     text-align: left;
     border-bottom: 1px solid var(--border-color);
-}
-
-/* Removed zebra-striping for a cleaner look, relying on borders */
-.interactions-table tbody tr:nth-child(even) {
-    background-color: transparent;
 }
 
 .interactions-table tbody tr:hover {
@@ -392,7 +408,9 @@ textarea:focus {
     color: var(--primary-hover);
 }
 
-/* --- Skeleton Loader --- */
+/* =================================== */
+/* --- 7. Animations & Loaders --- */
+/* =================================== */
 .skeleton {
     background-color: #e0e0e0;
     border-radius: 4px;
@@ -432,7 +450,9 @@ textarea:focus {
     }
 }
 
-/* --- Modal --- */
+/* =================================== */
+/* --- 8. Modal (HCP History) --- */
+/* =================================== */
 .modal-overlay {
     position: fixed;
     top: 0;
@@ -489,7 +509,9 @@ textarea:focus {
     color: #555;
 }
 
-/* --- Responsive Design --- */
+/* =================================== */
+/* --- 9. Responsive Design --- */
+/* =================================== */
 @media (max-width: 992px) {
     .container {
         grid-template-columns: 1fr;
@@ -499,12 +521,6 @@ textarea:focus {
     h1 {
         font-size: 1.8rem;
         margin-bottom: 25px;
-    }
-}
-
-@media (max-width: 1200px) {
-    .container {
-        grid-template-columns: 1fr;
     }
 }
 
@@ -547,15 +563,5 @@ textarea:focus {
     .interactions-table td:last-child {
         border-bottom: none;
         /* Remove border from last item in card view */
-    }
-}
-
-@media (max-width: 400px) {
-    .actions-cell {
-        justify-content: flex-end;
-        /* Align items to the right on very small screens */
-        flex-wrap: nowrap;
-        /* Prevent wrapping on very small screens */
-        gap: 0.4rem;
     }
 }

@@ -310,13 +310,14 @@ function App() {
                             </div>
                         </div>
                         <div className="chat-input-area">
-                            <input
-                                type="text"
+                            <textarea
+                                rows="1"
                                 value={chatInput}
                                 onChange={(e) => setChatInput(e.target.value)}
                                 onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
                                 placeholder="Type interaction or tool command..."
                                 className="chat-input-field"
+                                onInput={(e) => { e.target.style.height = 'auto'; e.target.style.height = (e.target.scrollHeight) + 'px'; }}
                             />
                             <button onClick={handleSendMessage} className="send-ai-btn" title="Send">
                                 <IoSend />

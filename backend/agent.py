@@ -1,7 +1,7 @@
 import os
 from typing import Annotated, TypedDict
 from dotenv import load_dotenv
-from dotenv import load_dotenv
+from pydantic import BaseModel, Field
 from langchain_groq import ChatGroq
 from langchain_core.tools import tool
 from langgraph.graph import StateGraph, START, END
@@ -10,40 +10,37 @@ from database import SessionLocal, Interaction
 from langchain_core.messages import SystemMessage
 from langgraph.prebuilt import ToolNode, tools_condition
 
+# Load environment variables from .env file
+load_dotenv()
+
 # 1. LLM Setup
 llm = ChatGroq(
-    model="llama-3.1-8b-instant", 
-    temperature=0.2
+    model="llama-3.1-8b-instant",
+    temperature=0.2,
+    api_key=os.environ.get("API_KEY"),
+    timeout=60.0  
 )
 
-class InteractionSchema(BaseModel):
+class LogInteractionSchema(BaseModel):
     hcp_name: str = Field(description="Name of the Healthcare Professional/Doctor")
     interaction_type: str = Field(description="Type of interaction, e.g., 'Call', 'In-Person Meeting', 'Email'")
     summary: str = Field(description="Summary of what was discussed")
-    # 👇 हा नवीन कॉलम ॲड कर
-    next_follow_up: Optional[str] = Field(
-        default=None, 
-        description="The scheduled date and time for the next follow-up/meeting, if mentioned by the user (e.g., '2026-07-14 13:00:00'). Convert any natural date/time mentioned to ISO standard format if possible."
-    )
 
-
-@tool
-def log_interaction_tool(hcp_name: str, interaction_type: str, summary: str):
+@tool(args_schema=LogInteractionSchema)
+def log_interaction_tool(hcp_name: str, interaction_type: str, summary: str) -> str:
     """Use this tool to save/log a new interaction with a Healthcare Professional."""
     db = SessionLocal()
     try:
-        # ⚠️ Check the parameters carefully here:
         new_log = Interaction(
             hcp_name=hcp_name, 
             interaction_type=interaction_type, 
-            summary=summary
-            # If the model has next_follow_up, add that too, otherwise this is sufficient
+            summary=summary,
         )
         db.add(new_log)
         db.commit()
         db.refresh(new_log) # To generate the database ID
         print(f"--- SUCCESS: DB entry created for {hcp_name} ---") # For understanding from the terminal
-        return f"Success: Interaction with Dr. {hcp_name} has been saved."
+        return f"Success: Interaction with Dr. {hcp_name} has been saved successfully with Interaction ID: {new_log.id}."
     except Exception as e:
         db.rollback()
         print(f"--- DB ERROR: {str(e)} ---")
@@ -51,7 +48,13 @@ def log_interaction_tool(hcp_name: str, interaction_type: str, summary: str):
     finally:
         db.close()
 
-@tool
+class EditInteractionSchema(BaseModel):
+    interaction_id: int = Field(description="The database ID of the interaction to modify.")
+    hcp_name: str = Field(default=None, description="The new name of the Healthcare Professional.")
+    interaction_type: str = Field(default=None, description="The new type of interaction.")
+    summary: str = Field(default=None, description="The new summary of the interaction.")
+
+@tool(args_schema=EditInteractionSchema)
 def edit_interaction_tool(interaction_id: int, hcp_name: str = None, interaction_type: str = None, summary: str = None) -> str:
     """Use this tool to modify or edit an existing logged interaction using its database ID."""
     db = SessionLocal()
@@ -111,11 +114,6 @@ def delete_interaction_tool(interaction_id: int) -> str:
         db.close()
 
 @tool
-def schedule_follow_up_tool(hcp_name: str, date_time: str) -> str:
-    """Use this tool to schedule a follow-up meeting or call with an HCP."""
-    return f"Success: Follow-up scheduled with Dr. {hcp_name} on {date_time}."
-
-@tool
 def search_product_info_tool(product_name: str) -> str:
     """Use this tool to fetch medical/pharma product information for sales representation."""
     # Mock data for Life Sciences Context
@@ -136,7 +134,6 @@ tools = [
     edit_interaction_tool, 
     get_hcp_history_tool,
     delete_interaction_tool,
-    schedule_follow_up_tool,
     search_product_info_tool
     ]
 llm_with_tools = llm.bind_tools(tools)
@@ -146,10 +143,11 @@ def chatbot_node(state):
     
     # Add a system message to clearly remind the AI to use the tool
     system_prompt = SystemMessage(
-        content="You are an AI CRM assistant. If the user asks to log, save, edit, or record a phone call, meeting, or interaction with a doctor (HCP), you MUST call the appropriate tool (e.g., log_interaction_tool) with the correct arguments. Do not just reply with text, always trigger the tool."
+        content="You are a CRM assistant. Once you successfully execute the log_interaction_tool to save data, you MUST immediately stop calling any tools and respond to the user with a final short text summary confirming the save. Do NOT call the tool again for the same request."
     )
     
     # Call the model by adding the system message at the beginning
+    
     response = llm_with_tools.invoke([system_prompt] + messages)
     return {"messages": [response]}
 

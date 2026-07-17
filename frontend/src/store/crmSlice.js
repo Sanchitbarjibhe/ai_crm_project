@@ -8,13 +8,11 @@ const crmSlice = createSlice({
     },
     reducers: {
         addMessage: (state, action) => {
+            // action.payload can now include { sender, text, rateLimit }
             state.chatHistory.push(action.payload);
         },
         setRecentLogs: (state, action) => {
             state.recentLogs = action.payload;
-        },
-        addLog: (state, action) => {
-            state.recentLogs.push(action.payload);
         },
         removeLog: (state, action) => {
             state.recentLogs = state.recentLogs.filter(log => log.id !== action.payload);
@@ -22,5 +20,5 @@ const crmSlice = createSlice({
     }
 });
 
-export const { addMessage, setRecentLogs, addLog, removeLog } = crmSlice.actions;
+export const { addMessage, setRecentLogs, removeLog } = crmSlice.actions;
 export default crmSlice.reducer;

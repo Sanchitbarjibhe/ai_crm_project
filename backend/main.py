@@ -27,22 +27,87 @@ class FormInteractionRequest(BaseModel):
 class ScheduleRequest(BaseModel):
     next_follow_up: str = Field(..., example="2026-07-20T10:00")
 
-# API to handle conversational chat with the LangGraph agent
 @app.post("/api/chat")
 def chat_with_crm_agent(request: ChatRequest):
-    inputs = {"messages": [("user", request.message)]}
-    
-    # Run LangGraph
-    result = agent_graph.invoke(inputs)
-    
-    # Extract the last message from the AI or tool
-    ai_message = result["messages"][-1].content
-    
-    # If the last message is empty, check the second-to-last message from the graph (from the tool)
-    if not ai_message and len(result["messages"]) > 1:
-        ai_message = result["messages"][-2].content
+    rate_limit_info = {}
+    try:
+        inputs = {"messages": [("user", request.message)]}
         
-    return {"response": ai_message}
+        # १. LangGraph रन करा आणि सर्व मेसेजेस गोळा करा
+        all_messages = []
+        for chunk in agent_graph.stream(inputs):
+            # चंक कोणत्याही नोडचा असो (chatbot किंवा tools), त्याचे मेसेजेस बाहेर काढा
+            for node_name, node_data in chunk.items():
+                if "messages" in node_data:
+                    all_messages.extend(node_data["messages"])
+
+        # जर काहीच मेसेज आले नाहीत तर सुरक्षित राहण्यासाठी
+        if not all_messages:
+            return {"response": "Sorry, I couldn't process that request.", "rate_limit": rate_limit_info}
+
+        # २. शेवटचा मेसेज पकडा (हा AI चा किंवा Tool चा असू शकतो)
+        last_message = all_messages[-1]
+        ai_message = last_message.content
+
+        # ३. जर शेवटच्या मेसेजमध्ये कन्टेन्ट नसेल (उदा. फक्त tool_calls ऑब्जेक्ट असेल) 
+        # तर मागचे मेसेजेस तपासून टेक्स्ट किंवा टूल आउटपुट शोधू
+        if not ai_message:
+            # शेवटून मागे जात पहिला नॉन-एम्प्टी मेसेज शोधू
+            for msg in reversed(all_messages):
+                if msg.content:
+                    ai_message = msg.content
+                    break
+            
+            # तरीही काही मिळालं नाही तर डिफॉल्ट मेसेज
+            if not ai_message:
+                ai_message = "Success: Action completed."
+
+        # ४. Rate Limit माहिती गोळा करा (Optional सेफ्टीसह)
+        if hasattr(last_message, 'response_metadata') and last_message.response_metadata:
+            meta = last_message.response_metadata
+            if meta.get('x-ratelimit-limit-tokens'):
+                rate_limit_info['limit'] = meta.get('x-ratelimit-limit-tokens')
+                rate_limit_info['remaining'] = meta.get('x-ratelimit-remaining-tokens')
+
+        # फ्रंटएंडला जसा डेटा हवाय तसाच रिटर्न करा
+        return {"response": ai_message, "rate_limit": rate_limit_info}
+
+    except Exception as e:
+        print(f"--- AGENT ERROR: An error occurred in chat_with_crm_agent: {e} ---")
+        raise HTTPException(status_code=500, detail=f"An internal error occurred in the AI agent: {e}")
+    # This is a placeholder for where we'll store rate limit info
+    rate_limit_info = {}
+    try:
+        inputs = {"messages": [("user", request.message)]}
+        # Run LangGraph
+        # We use .stream() and get the last chunk to access response metadata
+        final_chunk = None
+        for chunk in agent_graph.stream(inputs):
+            final_chunk = chunk
+
+        # The final chunk from the 'chatbot' node contains the response
+        result = final_chunk.get("chatbot") if final_chunk else {"messages": []}
+        ai_message_obj = result["messages"][-1]
+        ai_message = ai_message_obj.content
+        
+        # Extract rate limit headers from the response metadata if available
+        if hasattr(ai_message_obj, 'response_metadata') and ai_message_obj.response_metadata.get('x-ratelimit-limit-tokens'):
+            meta = ai_message_obj.response_metadata
+            rate_limit_info['limit'] = meta.get('x-ratelimit-limit-tokens')
+            rate_limit_info['remaining'] = meta.get('x-ratelimit-remaining-tokens')
+
+        # If the last message is empty (often after a tool call), check the second-to-last message
+        if not ai_message and len(result["messages"]) > 1:
+            tool_output = result["messages"][-2].content
+            # If the tool output is also empty, provide a generic success message
+            ai_message = tool_output if tool_output else "Success: Action completed."
+            
+        return {"response": ai_message, "rate_limit": rate_limit_info}
+    except Exception as e:
+        # Log the full error for debugging on the backend
+        print(f"--- AGENT ERROR: An error occurred in chat_with_crm_agent: {e} ---")
+        # Return a user-friendly error to the frontend
+        raise HTTPException(status_code=500, detail=f"An internal error occurred in the AI agent: {e}")
 
 # API to log a new interaction from the structured form
 @app.post("/api/form-log")
